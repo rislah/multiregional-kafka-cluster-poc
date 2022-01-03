@@ -1,0 +1,1 @@
+{"dependencies":[["ffi",[">= 1.0.0"]],["win32-process",[">= 0"]],["eventmachine",["~> 1.0.0"]],["rubydns",["= 0.8.5"]],["landrush-ip",["~> 0.2.5"]],["filelock",[">= 0"]],["landrush",["= 1.3.2"]]],"checksum":"cd1fb9917677c1db2eefc4cf1180a3c4b116d2d77683cc352365d661af0a437a","vagrant_version":"2.2.19"}

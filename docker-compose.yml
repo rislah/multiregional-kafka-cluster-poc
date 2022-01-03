@@ -1,0 +1,80 @@
+services:
+  zookeeper-eu:
+    image: bitnami/zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOO_SERVER_ID: 1
+      ALLOW_ANONYMOUS_LOGIN: yes
+      ZOO_SERVERS: 0.0.0.0:2888:3888,zookeeper-central:2888:3888;zookeeper-us:2888:3888
+
+  zookeeper-central:
+    image: bitnami/zookeeper
+    ports:
+      - "2182:2181"
+    environment:
+      ALLOW_ANONYMOUS_LOGIN: yes
+      ZOO_SERVER_ID: 2
+      ZOO_SERVERS: zookeeper-eu:2888:3888,0.0.0.0:2888:3888,zookeeper-us:2888:3888
+    depends_on:
+      - zookeeper-eu
+
+  zookeeper-us:
+    image: bitnami/zookeeper
+    ports:
+      - "2183:2181"
+    environment:
+      ALLOW_ANONYMOUS_LOGIN: yes
+      ZOO_SERVER_ID: 3
+      ZOO_SERVERS: zookeeper-eu:2888:3888,zookeeper-central:2888:3888,0.0.0.0:2888:3888
+    depends_on:
+      - zookeeper-eu
+      - zookeeper-central
+
+  kafka-eu01:
+    image: bitnami/kafka
+    container_name: kafka-eu01
+    ports:
+      - "9092:9092"
+    volumes:
+      - ./eu/1.properties:/bitnami/kafka/config/server.properties
+    depends_on:
+      - zookeeper-eu
+    environment:
+      ALLOW_PLAINTEXT_LISTENER: yes
+
+  kafka-eu02:
+    image: bitnami/kafka
+    container_name: kafka-eu02
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./eu/2.properties:/bitnami/kafka/config/server.properties
+    depends_on:
+      - zookeeper-eu
+    environment:
+      ALLOW_PLAINTEXT_LISTENER: yes
+
+  kafka-us01:
+    image: bitnami/kafka
+    container_name: kafka-us01
+    ports:
+      - "9094:9094"
+    volumes:
+      - ./us/1.properties:/bitnami/kafka/config/server.properties
+    depends_on:
+      - zookeeper-us
+    environment:
+      ALLOW_PLAINTEXT_LISTENER: yes
+
+  kafka-us02:
+    image: bitnami/kafka
+    container_name: kafka-us02
+    ports:
+      - "9095:9095"
+    volumes:
+      - ./us/2.properties:/bitnami/kafka/config/server.properties
+    depends_on:
+      - zookeeper-us
+    environment:
+      ALLOW_PLAINTEXT_LISTENER: yes
